@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Candelo OS for Claude — Portable Edition</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: #0A0A0A; color: #EDEDE6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 20px; line-height: 1.55;
+  }
+  .wrap { width: 100%; max-width: 480px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  p.sub { color: #9A9A93; margin: 0 0 26px; font-size: .95rem; }
+  p { color: #C9C9C2; font-size: .95rem; }
+  a.btn {
+    display: block; padding: 18px 22px; border: 1px solid #2A2A28; border-radius: 14px;
+    text-decoration: none; color: #EDEDE6; background: #131312; transition: border-color .15s;
+    margin-bottom: 14px;
+  }
+  a.btn:active, a.btn:hover { border-color: #D4A437; }
+  .btn .name { font-size: 1.1rem; font-weight: 600; }
+  .btn .desc { color: #9A9A93; font-size: .9rem; margin-top: 4px; }
+  ul { color: #C9C9C2; font-size: .92rem; padding-left: 18px; }
+  footer { color: #5A5A55; font-size: .8rem; margin-top: 24px; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Candelo OS for Claude</h1>
+    <p class="sub">Portable Edition · a way of using Claude you can install · $0, runs locally</p>
+    <p>A small operating system: working habits Claude adopts, plus three local tools that keep your
+       notes current, enforce quality on every reply, and make web research actually good. No secrets,
+       no private data — safe to install.</p>
+    <a class="btn" href="./Candelo_OS_for_Claude.zip" download>
+      <div class="name">⬇ Download the kit (.zip)</div>
+      <div class="desc">Tools + CLAUDE.md + SETUP.md + README — install in a few minutes</div></a>
+    <a class="btn" href="./Candelo_OS_for_Claude_Overview.pdf">
+      <div class="name">📄 Read the overview (PDF)</div>
+      <div class="desc">What it is, the six laws, the tools, how to install</div></a>
+    <p>Inside the kit:</p>
+    <ul>
+      <li><b>CLAUDE.md</b> — the operating model your Claude reads on load</li>
+      <li><b>SETUP.md</b> — one clear install path (Mac + Python 3)</li>
+      <li><b>_tools/</b> — bulletproof brain, reply gate, research service</li>
+      <li><b>EXCLUDED.md</b> — exactly what was left out, so it's safe to share</li>
+    </ul>
+  </div>
+  <footer>Generalized from a live system · methodology + six laws intact, private data removed</footer>
+</body>
+</html>
