@@ -1,0 +1,58 @@
+name: Deploy static site to GitHub Pages
+
+# Why this file exists:
+# Commits kept landing on origin/main and GitHub Pages created no deployment
+# after 2a97fcc (3 Aug 2026) — the live site froze on the 1 Aug price sheet.
+# The likely cause is the repo's Pages source being set to "GitHub Actions"
+# while the repo had no workflow, so nothing ever built.
+#
+# This workflow makes that configuration correct instead of broken. It also
+# enables Pages in workflow mode itself (enablement: true) so it works whether
+# or not the setting was already right — no dashboard clicking required.
+#
+# It publishes the repo root as-is. Nothing is generated, rewritten or
+# templated, so squishy/b387b1e8b8ccbd (the barbershop sheet) ships exactly
+# as it is committed.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; never cancel one that is mid-flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages (and enable workflow-based Pages if needed)
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload whole repo as the Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
