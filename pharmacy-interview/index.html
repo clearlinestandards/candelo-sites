@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Interview value package for a pharmacy supervisor role in the Diablo service area: core value proposition, five pillars, career-progression story, metric worksheet, and behavioral answers.">
+<title>Diablo Interview Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+  :root {
+    --paper:      #F1F4F0;
+    --surface:    #FFFFFF;
+    --surface-2:  #E7ECE7;
+    --ink:        #111815;
+    --ink-2:      #37443F;
+    --muted:      #64736C;
+    --rule:       #D2DAD4;
+    --accent:     #0E6B54;
+    --accent-soft:#DDEBE4;
+    --signal:     #B93F19;
+    --signal-soft:#FAE5DC;
+    --shadow:     0 1px 2px rgba(17,24,21,.05), 0 8px 24px -14px rgba(17,24,21,.22);
+
+    --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --f-body:    "Source Serif 4", Georgia, "Times New Roman", serif;
+    --f-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --step--1: .8125rem;
+    --step-0:  1.0625rem;
+    --step-1:  1.25rem;
+    --step-2:  1.5rem;
+    --step-3:  1.9rem;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:      #0B100E;
+      --surface:    #131A17;
+      --surface-2:  #1B2420;
+      --ink:        #E6EDE8;
+      --ink-2:      #C0CCC5;
+      --muted:      #86968E;
+      --rule:       #27322D;
+      --accent:     #4AC5A1;
+      --accent-soft:#12302A;
+      --signal:     #FF8558;
+      --signal-soft:#3B1C11;
+      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 10px 26px -16px rgba(0,0,0,.7);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:      #0B100E;
+    --surface:    #131A17;
+    --surface-2:  #1B2420;
+    --ink:        #E6EDE8;
+    --ink-2:      #C0CCC5;
+    --muted:      #86968E;
+    --rule:       #27322D;
+    --accent:     #4AC5A1;
+    --accent-soft:#12302A;
+    --signal:     #FF8558;
+    --signal-soft:#3B1C11;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 10px 26px -16px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: var(--step-0);
+    line-height: 1.62;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap {
+    max-width: 43rem;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 5vw, 3.5rem) clamp(1.15rem, 5vw, 2rem) 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.25rem, 6vw, 3.25rem);
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead { display: flex; flex-direction: column; gap: .9rem; }
+
+  .stamp {
+    font-family: var(--f-mono);
+    font-size: .6875rem;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem .7rem;
+  }
+  .stamp .tick { width: .55rem; height: .55rem; background: var(--accent); border-radius: 1px; }
+
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 8vw, 3rem);
+    line-height: 1.02;
+    letter-spacing: -.028em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .standfirst {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: var(--step-1);
+    line-height: 1.5;
+    max-width: 34ch;
+  }
+
+  .counter {
+    font-family: var(--f-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+    padding-top: .85rem;
+    display: flex;
+    align-items: baseline;
+    gap: .5rem;
+    flex-wrap: wrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .counter b { color: var(--signal); font-weight: 600; }
+  .counter.done b { color: var(--accent); }
+
+  /* ---------- sections ---------- */
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: .6875rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin: 0;
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: var(--step-2);
+    line-height: 1.14;
+    letter-spacing: -.018em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: var(--step-0);
+    line-height: 1.25;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+
+  p { margin: 0; }
+  section > p, .card > p { max-width: 65ch; }
+
+  /* ---------- the one line ---------- */
+
+  .thesis {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--accent);
+    border-radius: 3px;
+    padding: clamp(1.25rem, 4vw, 1.9rem);
+    box-shadow: var(--shadow);
+  }
+  .thesis blockquote {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: clamp(1.15rem, 4.2vw, 1.5rem);
+    line-height: 1.32;
+    letter-spacing: -.015em;
+    text-wrap: pretty;
+  }
+  .thesis .attrib {
+    margin-top: .95rem;
+    font-family: var(--f-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  /* ---------- script block (say this) ---------- */
+
+  .script {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: clamp(1.15rem, 4vw, 1.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+    box-shadow: var(--shadow);
+  }
+  .script p { font-size: var(--step-0); }
+  .cue {
+    font-family: var(--f-mono);
+    font-size: .6875rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ---------- pillars ---------- */
+
+  .pillars { display: grid; gap: .9rem; }
+  @media (min-width: 40rem) { .pillars { grid-template-columns: 1fr 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1.15rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .card .lede { font-size: var(--step--1); color: var(--ink-2); line-height: 1.55; }
+  .card .tag {
+    font-family: var(--f-mono);
+    font-size: .625rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    align-self: flex-start;
+    padding: .2rem .45rem;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+
+  /* ---------- timeline ---------- */
+
+  ol.track {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  ol.track li {
+    display: grid;
+    grid-template-columns: 2.9rem 1fr;
+    gap: 0 .9rem;
+    padding-bottom: 1.15rem;
+    position: relative;
+  }
+  ol.track li::before {
+    content: "";
+    position: absolute;
+    left: 1.05rem;
+    top: 1.5rem;
+    bottom: -.2rem;
+    width: 1px;
+    background: var(--rule);
+  }
+  ol.track li:last-child { padding-bottom: 0; }
+  ol.track li:last-child::before { display: none; }
+  .step {
+    font-family: var(--f-mono);
+    font-size: .6875rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 2px;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: .04em;
+    position: relative;
+    z-index: 1;
+  }
+  ol.track .body { font-size: var(--step--1); color: var(--ink-2); line-height: 1.55; }
+  ol.track h3 { margin-bottom: .2rem; }
+
+  /* ---------- metric slots ---------- */
+
+  .slot {
+    font-family: var(--f-mono);
+    font-size: .9em;
+    font-weight: 500;
+    color: var(--signal);
+    background: var(--signal-soft);
+    border-bottom: 2px solid var(--signal);
+    border-radius: 2px 2px 0 0;
+    padding: .05em .3em;
+    min-width: 3.5rem;
+    display: inline-block;
+    outline: none;
+    white-space: pre-wrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .slot:empty::before {
+    content: attr(data-hint);
+    color: var(--signal);
+    opacity: .72;
+  }
+  .slot.filled {
+    color: var(--ink);
+    background: var(--accent-soft);
+    border-bottom-color: var(--accent);
+  }
+  .slot:focus-visible {
+    box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--accent);
+    border-radius: 2px;
+  }
+
+  .worksheet { display: flex; flex-direction: column; gap: .7rem; }
+  .row {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .95rem 1.05rem;
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+  }
+  .row .metric {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: var(--step--1);
+    letter-spacing: -.005em;
+  }
+  .row .fields {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem .55rem;
+    font-family: var(--f-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .row .arrow { color: var(--muted); }
+  .row .why { font-size: var(--step--1); color: var(--muted); line-height: 1.5; }
+
+  /* ---------- behavioral ---------- */
+
+  .qa {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .qa + .qa { margin-top: .7rem; }
+  .qa summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 1rem 1.1rem;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: var(--step-0);
+    line-height: 1.3;
+    display: flex;
+    gap: .8rem;
+    align-items: flex-start;
+    letter-spacing: -.01em;
+  }
+  .qa summary::-webkit-details-marker { display: none; }
+  .qa summary::after {
+    content: "+";
+    margin-left: auto;
+    font-family: var(--f-mono);
+    font-weight: 400;
+    color: var(--accent);
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+  .qa[open] summary::after { content: "–"; }
+  .qa summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .qa .inner {
+    padding: 0 1.1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1rem;
+  }
+  .star {
+    display: grid;
+    grid-template-columns: 4.1rem 1fr;
+    gap: .35rem .8rem;
+    align-items: baseline;
+  }
+  .star dt {
+    font-family: var(--f-mono);
+    font-size: .625rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .star dd { margin: 0; font-size: var(--step--1); line-height: 1.55; color: var(--ink-2); }
+
+  /* ---------- plain lists ---------- */
+
+  ul.plain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .65rem; }
+  ul.plain li {
+    display: grid;
+    grid-template-columns: 1.1rem 1fr;
+    gap: .7rem;
+    font-size: var(--step--1);
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 68ch;
+  }
+  ul.plain li::before {
+    content: "";
+    width: .4rem; height: .4rem;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-top: .55rem;
+    justify-self: center;
+  }
+  ul.plain.stop li::before {
+    background: var(--signal);
+    border-radius: 1px;
+    width: .45rem; height: .45rem;
+  }
+  ul.plain li b { color: var(--ink); font-weight: 600; font-family: var(--f-display); }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.15rem;
+    font-family: var(--f-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .reset {
+    align-self: flex-start;
+    font-family: var(--f-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: .35rem .7rem;
+    cursor: pointer;
+  }
+  .reset:hover { color: var(--ink); border-color: var(--muted); }
+  .reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    .qa .inner { display: flex !important; }
+    .reset { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="stamp"><span class="tick"></span> Interview prep · Diablo service area</div>
+    <h1>Diablo Interview Brief</h1>
+    <p class="standfirst">The value package, the story, and the eight numbers that turn it from a claim into evidence.</p>
+    <div class="counter" id="counter" aria-live="polite"><b id="counter-n">0 of 20</b> <span>numbers filled — tap any orange field to type yours in. It saves on this device.</span></div>
+  </header>
+
+  <section>
+    <p class="eyebrow">The one line</p>
+    <div class="thesis">
+      <blockquote>“My value is my ability to step into complex, high-volume operations, quickly identify opportunities, develop the team, and implement sustainable workflows that improve performance and the member experience.”</blockquote>
+      <p class="attrib">Say it once, early. Everything after this is proof.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Opening — 90 seconds</p>
+    <h2>“Tell me about yourself.”</h2>
+    <div class="script">
+      <p class="cue">Say this</p>
+      <p>I've spent the last three-plus years supervising pharmacy operations in the Diablo service area. I started with three pharmacies, took on a fourth, and the assignment was the same each time: a location that needed to perform better. I'd go in, find where the workflow was breaking, rebuild it with the team, and hold it there.</p>
+      <p>That's what got me sent to Oakland Main Hospital Pharmacy for two months — <span class="slot" data-slot="oak" data-hint="the result there"></span>. And it's why I was asked to take Shadelands and Walnut Creek, two of the busiest pharmacies we run, filling about <span class="slot" data-slot="vol" data-hint="Rx/day"></span> a day between them. Today I'm responsible for more than fifty people across those sites.</p>
+      <p>What I bring isn't just experience supervising. It's a repeatable way to walk into a complex, high-volume operation, find the opportunities fast, develop the team, and put workflows in place that hold after I move on.</p>
+    </div>
+    <p class="why" style="font-family:var(--f-mono);font-size:var(--step--1);color:var(--muted)">Ends on the thesis. Do not run past two minutes.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">The five pillars</p>
+    <h2>What you're actually selling</h2>
+    <div class="pillars">
+
+      <div class="card">
+        <span class="tag">Scale</span>
+        <h3>Proven operational leadership</h3>
+        <p class="lede">Three-plus years supervising pharmacy operations across multiple locations and a team of 50+. Not one site, one shift — a portfolio.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">Turnaround</span>
+        <h3>Performance recovery</h3>
+        <p class="lede">You get handed the locations that need improvement. You find the gap, build the workflow, train the team, and the number moves: <span class="slot" data-slot="turn" data-hint="X% → Y%"></span>.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">Volume</span>
+        <h3>High-volume execution</h3>
+        <p class="lede">Two of the busiest pharmacies in the service area. Call-outs, system outages, a full waiter queue, and an escalated member — at the same time — and decisions still get made in real time.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">People</span>
+        <h3>Developing the bench</h3>
+        <p class="lede">You coach, set expectations, give feedback, and delegate real responsibility, so the operation doesn't stop when the supervisor isn't standing there.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">Change</span>
+        <h3>Process improvement</h3>
+        <p class="lede">“That's how we've always done it” isn't an answer. You evaluate the workflow, find the bottleneck, change it, measure whether it worked, and adjust when it didn't.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">Use it</span>
+        <h3>How to deploy these</h3>
+        <p class="lede">Every behavioral answer should land on one pillar. If an answer doesn't map to one of the five, it's a story you don't need to tell.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">The progression</p>
+    <h2>The story they'll remember</h2>
+    <p>Told in order, the assignments say what you shouldn't have to say out loud: leadership kept handing you bigger and harder problems.</p>
+    <ol class="track">
+      <li>
+        <span class="step">01</span>
+        <div>
+          <h3>Three pharmacies</h3>
+          <p class="body">First supervisory span. Learned the operation from the floor up.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step">02</span>
+        <div>
+          <h3>Expanded to four</h3>
+          <p class="body">Workflows rebuilt, team performance improved — <span class="slot" data-slot="four" data-hint="what moved"></span>.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step">03</span>
+        <div>
+          <h3>Oakland Main Hospital Pharmacy — two months</h3>
+          <p class="body">Asked to support a struggling site on a defined assignment. Left it at <span class="slot" data-slot="oak2" data-hint="result"></span>.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step">04</span>
+        <div>
+          <h3>Shadelands and Walnut Creek</h3>
+          <p class="body">Same playbook, two of the highest-volume environments in the area.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step">05</span>
+        <div>
+          <h3>50+ employees today</h3>
+          <p class="body">The span you're operating at right now — and the floor, not the ceiling, of what you're interviewing for.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="eyebrow">The numbers</p>
+    <h2>Eight metrics that carry the whole package</h2>
+    <p>Approximate is fine. “Roughly, we went from about 68% to the low 80s over four months” beats a precise number you can't remember under pressure — and it beats “I improved metrics” by a mile. Fill what you know; leave the rest blank rather than guessing at something they can check.</p>
+    <div class="worksheet">
+
+      <div class="row">
+        <span class="metric">TME — member experience</span>
+        <div class="fields"><span class="slot" data-slot="tme-a" data-hint="before"></span><span class="arrow">→</span><span class="slot" data-slot="tme-b" data-hint="after"></span><span class="arrow">in</span><span class="slot" data-slot="tme-t" data-hint="months"></span></div>
+        <p class="why">Their headline metric. Lead with this one if it moved.</p>
+      </div>
+
+      <div class="row">
+        <span class="metric">JDP score</span>
+        <div class="fields"><span class="slot" data-slot="jdp-a" data-hint="before"></span><span class="arrow">→</span><span class="slot" data-slot="jdp-b" data-hint="after"></span><span class="arrow">in</span><span class="slot" data-slot="jdp-t" data-hint="months"></span></div>
+        <p class="why">External validation — worth naming even if the move was modest.</p>
+      </div>
+
+      <div class="row">
+        <span class="metric">Wait time / waiter turnaround</span>
+        <div class="fields"><span class="slot" data-slot="wait-a" data-hint="before"></span><span class="arrow">→</span><span class="slot" data-slot="wait-b" data-hint="after"></span><span class="arrow">by</span><span class="slot" data-slot="wait-how" data-hint="what you changed"></span></div>
+        <p class="why">The most tangible number in the room. Everyone understands minutes.</p>
+      </div>
+
+      <div class="row">
+        <span class="metric">Prescription volume</span>
+        <div class="fields"><span class="slot" data-slot="rx" data-hint="Rx per day/week"></span><span class="arrow">across</span><span class="slot" data-slot="rx-sites" data-hint="# sites"></span></div>
+        <p class="why">Establishes scale before you claim you can handle scale.</p>
+      </div>
+
+      <div class="row">
+        <span class="metric">Productivity — Rx per tech hour / per FTE</span>
+        <div class="fields"><span class="slot" data-slot="prod-a" data-hint="before"></span><span class="arrow">→</span><span class="slot" data-slot="prod-b" data-hint="after"></span></div>
+        <p class="why">Proves the workflow change did something, not just the extra bodies.</p>
+      </div>
+
+      <div class="row">
+        <span class="metric">Attendance / call-out rate</span>
+        <div class="fields"><span class="slot" data-slot="att-a" data-hint="before"></span><span class="arrow">→</span><span class="slot" data-slot="att-b" data-hint="after"></span></div>
+        <p class="why">The one that shows you manage people, not just process.</p>
+      </div>
+
+      <div class="row">
+        <span class="metric">Training / competency completion</span>
+        <div class="fields"><span class="slot" data-slot="train-a" data-hint="before"></span><span class="arrow">→</span><span class="slot" data-slot="train-b" data-hint="after"></span></div>
+        <p class="why">Your bench-building pillar, in a number. Compliance-adjacent, so it lands.</p>
+      </div>
+
+      <div class="row">
+        <span class="metric">Staffing — vacancies, turnover, time-to-fill</span>
+        <div class="fields"><span class="slot" data-slot="staff-a" data-hint="before"></span><span class="arrow">→</span><span class="slot" data-slot="staff-b" data-hint="after"></span></div>
+        <p class="why">Retention in a high-volume site is a leadership result, and they know it.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Behavioral answers</p>
+    <h2>Six questions, already answered</h2>
+    <p>Each one is a skeleton — situation, action, result — keyed to a pillar. Fill the result with a real number and the answer is finished.</p>
+
+    <details class="qa">
+      <summary>“Tell me about a time you turned around an underperforming location.”</summary>
+      <div class="inner">
+        <dl class="star">
+          <dt>Situation</dt><dd>Oakland Main Hospital Pharmacy. Two-month assignment, sent in because performance needed to improve.</dd>
+          <dt>Action</dt><dd>First week was observation, not changes — where the work stalled, where staff were doubling back, which step created the queue. Then one workflow change at a time, trained on the floor, with the leads owning it.</dd>
+          <dt>Result</dt><dd><span class="slot" data-slot="q1" data-hint="metric before → after"></span> — and it held after the assignment ended.</dd>
+          <dt>Pillar</dt><dd>Performance turnaround.</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>“Walk me through a day with competing priorities.”</summary>
+      <div class="inner">
+        <dl class="star">
+          <dt>Situation</dt><dd>Two call-outs, a system outage, a full waiter queue, and an escalated member — one morning, one of the busiest sites in the area.</dd>
+          <dt>Action</dt><dd>Triage in order: safety first, then the member in front of you, then throughput. Redeployed staff to the bottleneck, moved non-urgent work to later in the day, took the escalation yourself so the team stayed on the queue.</dd>
+          <dt>Result</dt><dd><span class="slot" data-slot="q2" data-hint="wait time held at / recovered by"></span>.</dd>
+          <dt>Pillar</dt><dd>High-volume execution.</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>“Tell me about a difficult performance conversation.”</summary>
+      <div class="inner">
+        <dl class="star">
+          <dt>Situation</dt><dd>An employee whose attendance or output was affecting the rest of the team — and the team knew it.</dd>
+          <dt>Action</dt><dd>Private, specific, documented. Named the behavior and the impact, not the person. Set a clear expectation with a date, then followed up on that date instead of letting it drift.</dd>
+          <dt>Result</dt><dd><span class="slot" data-slot="q3" data-hint="what changed"></span>. Say what happened even if the answer was separation — owning that reads as stronger, not weaker.</dd>
+          <dt>Pillar</dt><dd>People development.</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>“Tell me about a change people resisted.”</summary>
+      <div class="inner">
+        <dl class="star">
+          <dt>Situation</dt><dd>A workflow that had been done the same way for years and was creating the backlog.</dd>
+          <dt>Action</dt><dd>Brought the staff who ran it into the fix instead of announcing it. Piloted it short, measured it, showed them their own numbers, adjusted the part they were right about.</dd>
+          <dt>Result</dt><dd><span class="slot" data-slot="q4" data-hint="metric moved"></span>, and the team defended the new process to the next site.</dd>
+          <dt>Pillar</dt><dd>Change and process improvement.</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>“Tell me about an escalated member complaint.”</summary>
+      <div class="inner">
+        <dl class="star">
+          <dt>Situation</dt><dd>A member whose issue had already gone past the staff member in front of them.</dd>
+          <dt>Action</dt><dd>Took it off the counter, listened without defending, fixed what could be fixed that day, and told them exactly what would happen next — then closed the loop with the staff member so it wasn't just handled, it was taught.</dd>
+          <dt>Result</dt><dd>Resolved without further escalation; <span class="slot" data-slot="q5" data-hint="TME / complaint trend"></span>.</dd>
+          <dt>Pillar</dt><dd>Member experience.</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="qa">
+      <summary>“Tell me about someone you developed.”</summary>
+      <div class="inner">
+        <dl class="star">
+          <dt>Situation</dt><dd>A technician or lead with more capability than their role was using.</dd>
+          <dt>Action</dt><dd>Delegated something real with your name still on the outcome. Set the expectation, checked in on a schedule rather than hovering, gave feedback that was specific enough to act on.</dd>
+          <dt>Result</dt><dd><span class="slot" data-slot="q6" data-hint="promoted / now runs X"></span> — and the site ran without you standing in it.</dd>
+          <dt>Pillar</dt><dd>People development.</dd>
+        </dl>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <p class="eyebrow">The closer</p>
+    <h2>“Why should we hire you?”</h2>
+    <div class="script">
+      <p class="cue">Say this</p>
+      <p>Because you're not taking a risk on whether I can do this — I've already done it here, more than once, at increasing scale. Three pharmacies, then four, then Oakland Main, then the two busiest sites in the service area. Every time, the operation was better when I left it than when I got there: <span class="slot" data-slot="close" data-hint="your strongest number"></span>.</p>
+      <p>And I don't do it by being the person everything runs through. I build the team so the performance stays after I move to the next problem. That's what I'd bring to this role.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Ask them</p>
+    <h2>Questions that make you sound like the peer, not the candidate</h2>
+    <ul class="plain">
+      <li><b>What does success look like in the first 90 days</b> for whoever takes this?</li>
+      <li><b>Which metric is under the most pressure right now</b> — and what's already been tried?</li>
+      <li><b>How much authority does this role have to change workflow</b> directly, versus escalate a recommendation?</li>
+      <li><b>What's the widest gap</b> between your strongest and weakest site, and what do you think is driving it?</li>
+      <li><b>Who would I be partnering with</b> — pharmacists in charge, ops, HR — and where do those lines actually run day to day?</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">Traps</p>
+    <h2>What loses the room</h2>
+    <ul class="plain stop">
+      <li><b>“I improved the metrics.”</b> Unquantified claims read as no claim at all. Number, timeframe, mechanism — every time.</li>
+      <li><b>Describing the problem without the change.</b> They don't need the diagnosis, they need what you did about it.</li>
+      <li><b>“We” for everything.</b> Credit the team, then say the decision that was yours. Both, in that order.</li>
+      <li><b>The four-minute STAR answer.</b> Cap it at two. Let them ask for more — that's the sign it landed.</li>
+      <li><b>Anything negative about a site or a leader.</b> Say what the operation needed, never who failed it.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Fill the orange fields and this becomes your script. Answers save to this browser only.</p>
+    <button class="reset" id="reset" type="button">Clear saved answers</button>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var KEY = "diablo-brief-v1";
+  var slots = Array.prototype.slice.call(document.querySelectorAll(".slot"));
+  var counter = document.getElementById("counter");
+  var counterN = document.getElementById("counter-n");
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || "{}") || {}; }
+    catch (e) { return {}; }
+  }
+  function save(data) {
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  function refresh() {
+    var filled = 0;
+    slots.forEach(function (s) {
+      var has = s.textContent.trim().length > 0;
+      s.classList.toggle("filled", has);
+      if (has) filled++;
+    });
+    counterN.textContent = filled + " of " + slots.length;
+    counter.classList.toggle("done", filled === slots.length);
+  }
+
+  var data = load();
+
+  slots.forEach(function (s) {
+    var key = s.getAttribute("data-slot");
+    s.setAttribute("contenteditable", "true");
+    s.setAttribute("role", "textbox");
+    s.setAttribute("spellcheck", "false");
+    s.setAttribute("aria-label", s.getAttribute("data-hint") || "value");
+    s.setAttribute("tabindex", "0");
+    if (data[key]) s.textContent = data[key];
+
+    s.addEventListener("input", function () {
+      var current = load();
+      var val = s.textContent.trim();
+      if (val) { current[key] = val; } else { delete current[key]; }
+      save(current);
+      refresh();
+    });
+
+    s.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); s.blur(); }
+    });
+
+    s.addEventListener("paste", function (e) {
+      e.preventDefault();
+      var text = (e.clipboardData || window.clipboardData).getData("text").replace(/\s+/g, " ");
+      document.execCommand("insertText", false, text);
+    });
+  });
+
+  document.getElementById("reset").addEventListener("click", function () {
+    slots.forEach(function (s) { s.textContent = ""; });
+    save({});
+    refresh();
+  });
+
+  refresh();
+})();
+</script>
+</body>
+</html>
