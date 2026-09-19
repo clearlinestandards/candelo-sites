@@ -1,0 +1,3 @@
+# Price sheets are for the store or shop owner holding the flyer, not for search.
+User-agent: *
+Disallow: /squishy/
