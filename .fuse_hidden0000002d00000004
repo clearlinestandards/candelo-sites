@@ -1,0 +1,345 @@
+#!/usr/bin/env bash
+# Auto-deploy. Pushes the site files to GitHub; GitHub Pages then publishes them.
+#
+# CORRECTED 2026-07-27 (CHG-0357): this header used to say "the GitHub Action then
+# publishes Pages." There is no GitHub Action. Pages on this repo is BRANCH-BASED —
+# measured, not assumed: `git ls-files` on the live repo returns zero files under
+# .github/, yet the site serves 200. See the .github deny-list note below.
+#
+# NOTE ON THE OTHER HALF OF THE OLD HEADER ("NOT a Mac requirement"): still true when
+# GH_TOKEN is supplied, but the no-token keychain path below IS Mac-only by nature.
+#
+# It builds a clean git repo in a temp dir (mounted folders block some git housekeeping),
+# so the push is always reliable regardless of where the source lives.
+#
+# Usage:  GH_USER=<github-username> GH_TOKEN=<fine-grained-PAT> ./push.sh
+#     or (on Bill's Mac):  ./push.sh          <- no token needed, see AUTH below
+set -euo pipefail
+SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# =============================================================================
+# STALENESS GUARD — ADDED 2026-08-06. RUNS BEFORE ANYTHING ELSE. READ THIS.
+# =============================================================================
+# ⚠️ DECLARED LOUDLY per _foundations/11: this is an ADDITION to a load-bearing
+# deploy script. It adds a REFUSAL at the top and changes nothing below it.
+#
+# THE INCIDENT IT EXISTS FOR — "the 2026-07-28 frozen-generator incident":
+#   The squishy price-sheet generator (and the rest of the overnight automation)
+#   froze on 2026-07-28. The generated pages sitting in this folder are its last
+#   output from that day and have NOT been rebuilt since. Meanwhile the LIVE
+#   pages were hand-corrected on 2026-08-01, 2026-08-03 and 2026-08-06.
+#
+#   This script ends in `git push --force` from a freshly-initialised temp repo.
+#   That is a whole-tree overwrite of origin/main: whatever is in this folder
+#   BECOMES the site, and anything only on the remote is destroyed. So running
+#   it with 2026-07-28 output would have silently reverted the live sheets to
+#   nine-day-old prices — the exact thing a store would then hold Bill to.
+#
+#   Measured on 2026-08-06, not assumed:
+#     shop  (b387b1e8b8ccbd): generated 10 rows vs 7 live  -> +3 rows re-added
+#     store (s7a56e4d527795): generated 12 rows vs 11 live -> prices reverted
+#                             (e.g. Mini Dumplings $2.25/$5 over $2.50/$4.99)
+#
+# WHAT IT DOES: refuses to run — non-zero, loud, nothing copied, nothing pushed —
+# when EITHER a STALE_OUTPUT_DO_NOT_PUSH marker sits next to the output, OR the
+# generated squishy pages are older than CANDELO_PUSH_MAX_AGE_HOURS (default 48).
+#
+# BILL IS NEVER LOCKED OUT: CANDELO_PUSH_ALLOW_STALE=1 overrides both checks in
+# one step. The refusal message says so every time it fires.
+# =============================================================================
+STALE_MARKER="$SRC/STALE_OUTPUT_DO_NOT_PUSH"
+PUSH_MAX_AGE_HOURS="${CANDELO_PUSH_MAX_AGE_HOURS:-48}"
+
+if [ "${CANDELO_PUSH_ALLOW_STALE:-0}" = "1" ]; then
+    echo "NOTE: CANDELO_PUSH_ALLOW_STALE=1 — staleness guard BYPASSED by explicit" >&2
+    echo "      request. You are force-pushing whatever is in this folder over the" >&2
+    echo "      live site. Make sure it was rebuilt, not left over from 2026-07-28." >&2
+else
+    _stale_refuse() {
+        echo "" >&2
+        echo "=========================================================================" >&2
+        echo "ABORT: REFUSING TO DEPLOY — the output in this folder looks STALE." >&2
+        echo "=========================================================================" >&2
+        echo "  Reason: $1" >&2
+        echo "" >&2
+        echo "  This guard exists because of the 2026-07-28 frozen-generator incident:" >&2
+        echo "  the automation stopped on 2026-07-28, the live price sheets were then" >&2
+        echo "  hand-corrected (2026-08-01 / 08-03 / 08-06), and this script ends in" >&2
+        echo "  'git push --force' — a whole-tree overwrite of the live site. Pushing" >&2
+        echo "  2026-07-28 output would REVERT those hand-corrections." >&2
+        echo "" >&2
+        echo "  NOTHING WAS COPIED AND NOTHING WAS PUSHED." >&2
+        echo "" >&2
+        echo "  The right fix (in order):" >&2
+        echo "    1. Revive the generator and rebuild:" >&2
+        echo "         bash '<brain>/_tools/squishy_pricesheet/daily_refresh.sh'" >&2
+        echo "    2. Eyeball the rebuilt pages under $SRC/squishy/" >&2
+        echo "    3. Delete the marker:  rm '$STALE_MARKER'" >&2
+        echo "    4. Re-run this script." >&2
+        echo "" >&2
+        echo "  YOU ARE NOT LOCKED OUT. To deploy anyway, deliberately, right now:" >&2
+        echo "         CANDELO_PUSH_ALLOW_STALE=1 $0" >&2
+        echo "  (or raise the age limit with CANDELO_PUSH_MAX_AGE_HOURS=<hours>)" >&2
+        echo "=========================================================================" >&2
+        exit 3
+    }
+
+    # --- check 1: the explicit marker file -----------------------------------
+    if [ -e "$STALE_MARKER" ]; then
+        _stale_refuse "marker file present: $STALE_MARKER"
+    fi
+
+    # --- check 2: age of the generated pages ---------------------------------
+    # Portable mtime. BSD/macOS is `stat -f %m`, GNU is `stat -c %Y`.
+    # ⚠️ `cmd -f || cmd -c` is NOT enough and was a real bug caught in testing:
+    # GNU stat ACCEPTS -f (it means "stat the filesystem") and exits 0 printing a
+    # MOUNT POINT, so the fallback never fires and the age comes out absurd. So we
+    # validate the result looks like an epoch second before accepting it.
+    # bash 3.2 safe — no arrays, no process substitution.
+    _mtime_of() {
+        _mm="$(stat -f %m "$1" 2>/dev/null || true)"
+        case "$_mm" in ''|*[!0-9]*) _mm="" ;; esac
+        if [ -z "$_mm" ] || [ "$_mm" -lt 1000000000 ]; then
+            _mm="$(stat -c %Y "$1" 2>/dev/null || true)"
+            case "$_mm" in ''|*[!0-9]*) _mm="" ;; esac
+        fi
+        printf '%s' "$_mm"
+    }
+    _NEWEST_MTIME=0
+    _GEN_COUNT=0
+    for _f in "$SRC"/squishy/*/index.html; do
+        if [ -f "$_f" ]; then
+            _GEN_COUNT=$((_GEN_COUNT + 1))
+            _m="$(_mtime_of "$_f")"
+            if [ -z "$_m" ]; then
+                _stale_refuse "could not read the modification time of $_f — freshness cannot be verified, so this refuses rather than guesses"
+            fi
+            if [ "$_m" -gt "$_NEWEST_MTIME" ]; then _NEWEST_MTIME="$_m"; fi
+        fi
+    done
+
+    if [ "$_GEN_COUNT" -eq 0 ]; then
+        echo "NOTE: staleness guard found no generated pages under $SRC/squishy/ —" >&2
+        echo "      age check skipped (nothing generated to be stale)." >&2
+    else
+        _NOW="$(date +%s)"
+        _AGE_H=$(( (_NOW - _NEWEST_MTIME) / 3600 ))
+        if [ "$_AGE_H" -gt "$PUSH_MAX_AGE_HOURS" ]; then
+            _stale_refuse "newest generated page under $SRC/squishy/ is ${_AGE_H}h old (limit ${PUSH_MAX_AGE_HOURS}h)"
+        fi
+        echo "Staleness guard: OK — newest generated page is ${_AGE_H}h old (limit ${PUSH_MAX_AGE_HOURS}h)."
+    fi
+fi
+# ============================ END STALENESS GUARD ============================
+
+REPO="${GH_REPO:-candelo-sites}"
+
+# =============================================================================
+# AUTH — two paths. Added 2026-07-27 (CHG-0357).
+# =============================================================================
+# THE BUG THIS FIXES
+#   This script used to hard-require GH_TOKEN (`: "${GH_TOKEN:?...}"`) and build a
+#   `https://user:token@github.com/...` remote. So it NEVER consulted the git
+#   credential helper — and Bill was asked to mint a Personal Access Token every
+#   single time, forever, even though his Mac has held a working github.com
+#   credential in the macOS keychain (osxkeychain helper, account
+#   `clearlinestandards`) the whole time. Proven 2026-07-26 by a `git push
+#   --dry-run` against a REAL local delta (exit 0, "18dda4b..f61fd12 HEAD -> main")
+#   with a credentials-off control that FAILED (exit 128, "could not read Username").
+#   The credential was never missing. The script just never asked for it.
+#   See CHG-0355 / mac_exec out/gh_auth_probe2.out.
+#
+# PATH 1 — GH_TOKEN is set: BEHAVES EXACTLY AS BEFORE. Byte-for-byte the same
+#   token-in-remote-URL push. This is the CI / sandbox / any-machine path and it
+#   is deliberately untouched. The keychain path below is ADDITIVE ONLY.
+#
+# PATH 2 — GH_TOKEN is unset AND we are on macOS AND the credential helper
+#   actually answers for github.com: push over a CLEAN remote URL with NO
+#   credentials embedded, and let the osxkeychain helper supply them. A token is
+#   never written into the URL, never into .git/config, never into a log.
+#
+# NEITHER — fail LOUDLY and stop. Do not silently no-op. A gate that fails closed
+#   and says nothing is the exact _foundations/10 disease that CHG-0355 caught in
+#   the mac_exec runner (the dropped +x bit that kept the logs green while nothing
+#   ran). If you see nothing here, nothing happened, and you will be told so.
+#
+# DETECTION IS PROVEN, NOT ASSUMED: `uname -s` = Darwin is necessary but NOT
+#   sufficient, so we also ask git itself whether a credential exists, with
+#   prompts hard-disabled so a miss returns instead of hanging under launchd.
+#   The password value is consumed and discarded — never printed, never stored.
+# =============================================================================
+
+# =============================================================================
+# PATH 0 — the stored credential file. ADDED 2026-07-27 (CHG-0361).
+# =============================================================================
+# ⚠️ DECLARED LOUDLY per _foundations/11: this is an ADDITION to a load-bearing
+# deploy script. It is ADDITIVE ONLY. PATH 1 (explicit GH_TOKEN) and PATH 2
+# (macOS keychain) are byte-for-byte unchanged below and still behave exactly as
+# they did. This block can only ever fire when GH_TOKEN is UNSET — an explicit
+# GH_TOKEN always wins, so no existing caller changes behaviour.
+#
+# WHY IT EXISTS: PATH 2 needs the macOS login keychain. Under launchd the keychain
+# can be locked, and off the Mac it does not exist at all — so the keychain path
+# is the one that quietly dies at 3am. ~/.candelo/github.env is a plain 600 file
+# written by _tools/github_cred/store_credential.sh (CHG-0358/0361); it works
+# under launchd, works when the keychain is locked, and survives a re-login.
+#
+# CHG-0358 deliberately deferred this wiring until the credential had been PROVEN
+# end-to-end rather than merely stored — _foundations/10, evaluate don't declare.
+# It was proven on 2026-07-27: a forced real delta pushed to candelo-sites with
+# the new credential (remote head b165792), the live site served the nonce
+# 20260727T154136Z-55083 at HTTP 200, and a credentials-off control FAILED at
+# exit 128. Only then was this landed.
+#
+# LOCATION IS SECURITY-LOAD-BEARING: outside the brain folder (so it is never
+# mirrored to Google Drive or the 8 TB — CHG-0357 had to scrub a plaintext PAT
+# out of exactly that path) and outside any repo (so it cannot be committed).
+# =============================================================================
+CANDELO_GH_ENV="${CANDELO_GH_ENV:-$HOME/.candelo/github.env}"
+GH_TOKEN_SOURCE="GH_TOKEN environment variable (PATH 1)"
+if [ -z "${GH_TOKEN:-}" ] && [ -r "$CANDELO_GH_ENV" ]; then
+    # Caller's GH_USER wins over the file's. Saved before sourcing, restored after.
+    _CALLER_GH_USER="${GH_USER:-}"
+    ENV_MODE="$(stat -f '%Lp' "$CANDELO_GH_ENV" 2>/dev/null || stat -c '%a' "$CANDELO_GH_ENV" 2>/dev/null || echo '???')"
+    if [ "$ENV_MODE" != "600" ]; then
+        echo "WARNING: $CANDELO_GH_ENV is mode $ENV_MODE, not 600. A credential file" >&2
+        echo "         readable by anyone else is a leak. Fix: chmod 600 '$CANDELO_GH_ENV'" >&2
+        echo "         Continuing — refusing to deploy would trade a leak for an outage." >&2
+    fi
+    set +u
+    # shellcheck disable=SC1090
+    . "$CANDELO_GH_ENV" || true
+    set -u
+    if [ -n "${_CALLER_GH_USER:-}" ]; then GH_USER="$_CALLER_GH_USER"; fi
+    unset _CALLER_GH_USER
+    if [ -n "${GH_TOKEN:-}" ]; then
+        GH_TOKEN_SOURCE="$CANDELO_GH_ENV (PATH 0)"
+    fi
+fi
+
+AUTH_MODE=""
+if [ -n "${GH_TOKEN:-}" ]; then
+    AUTH_MODE="token"
+    : "${GH_USER:?set GH_USER to your GitHub username}"
+else
+    if [ "$(uname -s)" != "Darwin" ]; then
+        echo "ABORT: GH_TOKEN is not set and this is not macOS (uname -s = $(uname -s))." >&2
+        echo "       The macOS keychain fallback is unavailable off the Mac." >&2
+        echo "       Re-run with: GH_USER=<user> GH_TOKEN=<PAT> $0" >&2
+        echo "       Nothing was copied and nothing was pushed." >&2
+        exit 1
+    fi
+
+    # Ask git whether a github.com credential really exists. Prompts hard-off so
+    # this returns fast instead of blocking on a terminal that may not exist.
+    CRED_USER="$(
+        printf 'protocol=https\nhost=github.com\n\n' \
+        | GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=/usr/bin/false SSH_ASKPASS=/usr/bin/false \
+          git credential fill 2>/dev/null \
+        | sed -n 's/^username=//p'
+    )" || true
+
+    if [ -z "$CRED_USER" ]; then
+        echo "ABORT: GH_TOKEN is not set, and no github.com credential was found in" >&2
+        echo "       the macOS keychain (git credential fill returned no username)." >&2
+        echo "       Fix ONE of these, then re-run:" >&2
+        echo "         a) store the credential:  git credential-osxkeychain store" >&2
+        echo "         b) or run with a PAT:     GH_USER=<user> GH_TOKEN=<PAT> $0" >&2
+        echo "       Nothing was copied and nothing was pushed." >&2
+        exit 1
+    fi
+
+    # GH_USER defaults to the keychain account so the script runs bare on the Mac.
+    # ⚠️ FLAGGED per _foundations/11 — this is an ADDITION beyond the token fix.
+    # It only ever fires when GH_USER is unset; an explicit GH_USER always wins.
+    GH_USER="${GH_USER:-$CRED_USER}"
+    AUTH_MODE="keychain"
+    GH_TOKEN_SOURCE="macOS login keychain (PATH 2)"   # CHG-0361 reporting only
+fi
+
+WORK="$(mktemp -d)"
+trap 'rm -rf "$WORK"' EXIT
+
+# Copy the deployable files.
+#
+# FIXED 2026-07-26 (CHG-0353). This line used to hard-code the folder list:
+#   cp -R index.html .nojekyll README.md maat frontier evidence-trail .github ...
+# Any NEW site folder was silently dropped. That is not hypothetical — it already
+# happened: `candelo-os-for-claude` was never pushed even though the hub index.html
+# links to it, so that link has been a 404 since 2026-07-04 and nobody noticed.
+# Now it copies EVERYTHING except an explicit deny-list, so adding a folder is all
+# it takes to ship it. _foundations/04 — build the sequence that can't fail, not
+# a one-off fix.
+#
+# The deny-list is SECURITY-LOAD-BEARING: .env / .env.* must never be copied into a
+# public repo. Do not remove those entries.
+#
+# .github IS ALSO DENIED BY DEFAULT — added 2026-07-27 (CHG-0357). Read before removing:
+#   Pages on this repo is BRANCH-BASED, not workflow-based. Measured, not assumed:
+#   `git ls-files` on the live repo returns 24 files and NOT ONE of them is under
+#   .github/ — yet https://clearlinestandards.github.io/candelo-sites/ returns 200.
+#   So the local `.github/workflows/deploy.yml` has never been on the remote and is
+#   not what publishes the site.
+#   But every push TRIED to create it, and GitHub refuses that unless the credential
+#   carries `workflow` scope: "refusing to allow a Personal Access Token to create or
+#   update workflow `.github/workflows/deploy.yml` without `workflow` scope". The
+#   keychain credential is a classic PAT without that scope. So a dead file that
+#   publishes nothing was hard-blocking every deploy, including the candelo-os-for-claude
+#   404 fix. Dropping it from the payload unblocks the deploy and changes nothing live.
+#   TO RE-ENABLE (only after a workflow-scoped credential exists): DEPLOY_WORKFLOWS=1
+cd "$SRC"
+# A plain string, not a bash array: macOS still ships /bin/bash 3.2, where expanding
+# an empty array under `set -u` aborts the script. The sentinel matches no real file.
+DENY_GITHUB='.github'
+if [ "${DEPLOY_WORKFLOWS:-0}" = "1" ]; then
+    DENY_GITHUB='__deny_nothing__'
+    echo "NOTE: DEPLOY_WORKFLOWS=1 — .github WILL be pushed. This needs a credential" >&2
+    echo "      with 'workflow' scope or GitHub will reject the push." >&2
+fi
+find . -mindepth 1 -maxdepth 1 \
+     ! -name '.git' \
+     ! -name '.env' ! -name '.env.*' ! -name '*.pem' ! -name '*.key' \
+     ! -name 'push.sh' \
+     ! -name 'push.sh.*' ! -name '*.bak' ! -name '_backups' \
+     ! -name '.DS_Store' \
+     ! -name 'STALE_OUTPUT_DO_NOT_PUSH' \
+     ! -name "$DENY_GITHUB" \
+     -exec cp -R {} "$WORK"/ \;
+
+# Belt-and-braces: refuse to deploy if a secret-shaped file or string slipped through.
+if find "$WORK" \( -name '.env' -o -name '.env.*' -o -name '*.pem' -o -name '*.key' \) | grep -q .; then
+  echo "ABORT: a credential-shaped file reached the deploy staging dir. Not pushing." >&2
+  exit 1
+fi
+if grep -rlIE 'ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{20,}|sk_live_[A-Za-z0-9]{10,}' "$WORK" >/dev/null 2>&1; then
+  echo "ABORT: a token-shaped string was found in the files about to be published." >&2
+  echo "       Nothing was pushed. Find and remove it, then re-run." >&2
+  exit 1
+fi
+
+cd "$WORK"
+git init -q
+git checkout -q -B main
+git add -A
+git -c user.email="deploy@candelogroup.com" -c user.name="Candelo Deploy" \
+    commit -q -m "Deploy $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+# Remote + push. The ONLY difference between the two paths is whether credentials
+# are embedded in the URL. On the keychain path the URL is clean and the osxkeychain
+# helper answers; GIT_TERMINAL_PROMPT=0 makes a credential miss FAIL LOUDLY rather
+# than hang forever waiting on a terminal that may not exist under launchd.
+if [ "$AUTH_MODE" = "token" ]; then
+    git remote add origin "https://${GH_USER}:${GH_TOKEN}@github.com/${GH_USER}/${REPO}.git"
+    git push -q -u origin main --force
+else
+    git remote add origin "https://github.com/${GH_USER}/${REPO}.git"
+    GIT_TERMINAL_PROMPT=0 git push -q -u origin main --force
+fi
+
+# ⚠️ CHG-0361: the credential SOURCE is now reported alongside the auth mode, so a
+# log line tells you WHICH of the three paths actually carried the deploy. Without
+# it, PATH 0 and PATH 1 both print "token" and are indistinguishable after the fact.
+echo "Auth path used: $AUTH_MODE (credential source: $GH_TOKEN_SOURCE)"
+echo "Pushed. Live in ~1-2 min:"
+echo "  https://${GH_USER}.github.io/${REPO}/"
+echo "  https://${GH_USER}.github.io/${REPO}/maat/"
+echo "  https://${GH_USER}.github.io/${REPO}/frontier/"
