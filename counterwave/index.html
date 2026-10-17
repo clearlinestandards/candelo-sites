@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07070c">
+<title>CounterWave — the counter that refills itself</title>
+<meta name="description" content="Weekly hand-delivery of whatever's selling right now to independent counters across the Central Valley. Free delivery and setup. Full credit on defects. I take back what doesn't sell.">
+<style>
+:root{
+  --bg:#07070c; --ink:#f4f6fb; --dim:#98a0b4; --line:rgba(255,255,255,.10);
+  --glass:rgba(255,255,255,.045); --hot:#ff4d8d; --cool:#57c7ff; --lime:#67ffb0; --amber:#ffc247;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);overflow-x:hidden;
+  font:400 17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding-bottom:84px;-webkit-font-smoothing:antialiased;
+}
+/* ---------- aurora backdrop ---------- */
+.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.aurora i{
+  position:absolute;display:block;border-radius:50%;filter:blur(70px);opacity:.5;
+  animation:drift 22s ease-in-out infinite alternate;
+}
+.a1{width:70vw;height:70vw;left:-18vw;top:-16vw;background:radial-gradient(circle at 35% 35%,#ff4d8d,transparent 65%)}
+.a2{width:62vw;height:62vw;right:-16vw;top:14vh;background:radial-gradient(circle at 60% 40%,#57c7ff,transparent 65%);animation-delay:-7s}
+.a3{width:66vw;height:66vw;left:6vw;bottom:-24vh;background:radial-gradient(circle at 50% 50%,#67ffb0,transparent 65%);animation-delay:-14s}
+@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(4vw,-5vh,0) scale(1.18)}}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.16;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.5'/></svg>")}
+@media (prefers-reduced-motion:reduce){.aurora i{animation:none}}
+
+.wrap{max-width:680px;margin:0 auto;padding:0 22px;position:relative}
+
+/* ---------- hero ---------- */
+.hero{min-height:96svh;display:flex;flex-direction:column;justify-content:center;padding:40px 0 24px}
+.kicker{display:inline-flex;align-items:center;gap:9px;align-self:flex-start;
+  border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(12px);
+  padding:7px 14px;border-radius:999px;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:700}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime);animation:pulse 2.1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+h1{font-size:clamp(38px,10.5vw,62px);line-height:1.02;letter-spacing:-.035em;margin:22px 0 0;font-weight:800}
+h1 .g{background:linear-gradient(100deg,var(--hot),var(--amber) 42%,var(--lime) 72%,var(--cool));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:19.5px;color:var(--dim);margin:20px 0 0;max-width:30ch}
+#stage{width:100%;height:min(46svh,360px);margin:6px 0 0;touch-action:pan-y}
+.hint{text-align:center;color:var(--dim);font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;margin:2px 0 0}
+
+/* ---------- sections ---------- */
+section{padding:64px 0}
+.eyebrow{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:700;margin:0 0 14px}
+h2{font-size:clamp(27px,6.6vw,38px);line-height:1.12;letter-spacing:-.025em;margin:0 0 16px;font-weight:800}
+p.lead{color:var(--dim);font-size:18px;margin:0}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- product rail ---------- */
+.rail{display:flex;gap:14px;overflow-x:auto;padding:6px 22px 14px;margin:0 -22px;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.pod{flex:0 0 148px;scroll-snap-align:center;border:1px solid var(--line);border-radius:20px;
+  background:var(--glass);backdrop-filter:blur(14px);padding:12px 12px 14px;text-align:center}
+.pod canvas{width:124px;height:124px;display:block;margin:0 auto;touch-action:pan-y}
+.pod b{display:block;font-size:14px;margin:8px 0 2px;letter-spacing:-.01em}
+.pod span{font-size:12px;color:var(--dim)}
+
+/* ---------- glass cards ---------- */
+.cards{display:grid;gap:12px;margin:26px 0 0}
+.card{border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(14px);padding:20px}
+.card b{display:block;font-size:18px;letter-spacing:-.015em;margin:0 0 5px}
+.card span{color:var(--dim);font-size:15.5px}
+.card .ic{font-size:22px;display:block;margin:0 0 10px}
+
+/* ---------- steps ---------- */
+.step{display:flex;gap:16px;padding:0 0 26px;position:relative}
+.step:last-child{padding-bottom:0}
+.step .n{flex:0 0 40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;background:linear-gradient(140deg,var(--hot),var(--cool));color:#06060a}
+.step b{display:block;font-size:17.5px;margin:8px 0 4px;letter-spacing:-.015em}
+.step span{color:var(--dim);font-size:15.5px}
+
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 0 0}
+.stat{border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(14px);padding:18px}
+.stat b{display:block;font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1;
+  background:linear-gradient(120deg,var(--hot),var(--amber),var(--lime));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{display:block;color:var(--dim);font-size:13.5px;margin-top:7px}
+
+.quote{border-left:2px solid transparent;border-image:linear-gradient(180deg,var(--hot),var(--cool)) 1;
+  padding-left:18px;margin:34px 0;font-size:20px;line-height:1.42;letter-spacing:-.015em}
+.quote span{display:block;color:var(--dim);font-size:15px;margin-top:10px;letter-spacing:0}
+
+footer{border-top:1px solid var(--line);margin-top:56px;padding:30px 0 34px;color:var(--dim);font-size:14.5px}
+footer b{color:var(--ink)}
+a{color:inherit}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 18px calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(7,7,12,0),rgba(7,7,12,.92) 32%);backdrop-filter:blur(12px)}
+.bar a{display:block;max-width:640px;margin:0 auto;text-align:center;text-decoration:none;font-weight:800;font-size:17px;
+  padding:17px;border-radius:17px;color:#06060a;background:linear-gradient(100deg,var(--hot),var(--amber) 55%,var(--lime));
+  box-shadow:0 10px 34px rgba(255,77,141,.34)}
+</style>
+</head>
+<body>
+<div class="aurora"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+<div class="grain"></div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="kicker"><span class="dot"></span>Central Valley · restocked weekly</span>
+    <h1>The counter that <span class="g">refills itself.</span></h1>
+    <p class="sub">Whatever the internet made kids want — on your counter this week. You front nothing. You do nothing.</p>
+    <canvas id="stage"></canvas>
+    <p class="hint">↑ drag it · squeeze it</p>
+  </div>
+
+  <section class="reveal">
+    <p class="eyebrow">The line</p>
+    <h2>What's moving right now.</h2>
+    <p class="lead">Not a catalog of everything. The few things actually selling this month — and they change when the internet changes.</p>
+  </section>
+  <div class="rail reveal" id="rail"></div>
+
+  <section class="reveal">
+    <p class="eyebrow">Zero risk</p>
+    <h2>You cannot lose a dollar on this.</h2>
+    <div class="cards">
+      <div class="card"><span class="ic">🛟</span><b>It breaks? Full credit.</b><span>Any defect, any time. No forms, no argument.</span></div>
+      <div class="card"><span class="ic">↩️</span><b>It doesn't sell? I take it back.</b><span>You are never stuck with product you paid for.</span></div>
+      <div class="card"><span class="ic">🚚</span><b>Free delivery and setup.</b><span>I stock it, rotate it, keep it full. You just ring them up.</span></div>
+    </div>
+    <p class="quote">Most suppliers sell you the box and it's yours.<br>Ask the next one if they take back what didn't sell.
+      <span>— Billy, and nobody has said yes yet</span></p>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">How it works</p>
+    <h2>Three steps. None of them yours.</h2>
+    <div style="margin-top:26px">
+      <div class="step"><div class="n">1</div><div><b>I show you what's selling.</b><span>Two minutes at your counter. No appointment, no pitch deck.</span></div></div>
+      <div class="step"><div class="n">2</div><div><b>I deliver it and set it up.</b><span>Same week. It goes on your counter ready to sell, and I build the display.</span></div></div>
+      <div class="step"><div class="n">3</div><div><b>I come back every week.</b><span>Same day, same time. I refill what sold and pull what didn't. Dead product leaves, new product lands.</span></div></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Where things stand</p>
+    <h2>Already on counters.</h2>
+    <div class="stats">
+      <div class="stat"><b data-count="50" data-suffix="+">0</b><span>counters with a written order on the books</span></div>
+      <div class="stat"><b data-count="8">0</b><span>towns served, Ceres to Waterford</span></div>
+      <div class="stat"><b data-plain="Weekly">Weekly</b><span>restock and rotation — not a one-time drop</span></div>
+      <div class="stat"><b data-plain="$0">$0</b><span>of your money at risk, ever</span></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <p class="eyebrow">Who you're dealing with</p>
+    <h2>One guy. The same guy. Every week.</h2>
+    <p class="lead">I'm Billy — I walk this route myself. I'm the one who sets up your counter, counts what sold, and hauls back what didn't. No minimum, no contract, no account manager. If something's wrong, you text the person who put it there.</p>
+  </section>
+
+  <footer>
+    <b>Billy — The Squishy Specialist</b><br>
+    Text <a href="sms:+12098184879">(209) 818-4879</a> — texts get answered fastest.<br>
+    Modesto · Ceres · Riverbank · Oakdale · Turlock · Denair · Hughson · Waterford<br>
+    <span style="opacity:.7">Distributed by JC Supplies, Modesto CA.</span>
+  </footer>
+</div>
+
+<div class="bar"><a href="sms:+12098184879?&body=Hi%20Billy%20%E2%80%94%20I%20have%20a%20counter%20in%20">Text Billy about your counter</a></div>
+
+<script>
+(function(){
+"use strict";
+var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- soft-body blob: a ring of springs that dents under your thumb ---------- */
+function Blob(canvas, opts){
+  var ctx = canvas.getContext('2d'), dpr = Math.min(devicePixelRatio||1, 2);
+  var N = opts.n||58, pts = [], t = Math.random()*100;
+  var ptr = {x:-999,y:-999,on:false};
+  for(var i=0;i<N;i++) pts.push({o:0,v:0});
+
+  function size(){
+    var r = canvas.getBoundingClientRect();
+    canvas.width = Math.max(1, r.width*dpr); canvas.height = Math.max(1, r.height*dpr);
+  }
+  size(); addEventListener('resize', size);
+
+  function local(e){
+    var r = canvas.getBoundingClientRect();
+    var p = e.touches ? e.touches[0] : e;
+    ptr.x = (p.clientX-r.left)*dpr; ptr.y = (p.clientY-r.top)*dpr; ptr.on = true;
+  }
+  canvas.addEventListener('mousemove', local);
+  canvas.addEventListener('mouseleave', function(){ptr.on=false});
+  canvas.addEventListener('touchstart', local, {passive:true});
+  canvas.addEventListener('touchmove', local, {passive:true});
+  canvas.addEventListener('touchend', function(){ptr.on=false}, {passive:true});
+
+  function frame(){
+    var w = canvas.width, h = canvas.height;
+    var cx = w/2, cy = h/2, R = Math.min(w,h)*0.33;
+    ctx.clearRect(0,0,w,h);
+    t += 0.006;
+
+    /* physics: spring back to rest, damp, smooth against neighbours */
+    for(var i=0;i<N;i++){
+      var a = i/N*Math.PI*2;
+      var px = cx + Math.cos(a)*(R+pts[i].o), py = cy + Math.sin(a)*(R+pts[i].o);
+      if(ptr.on){
+        var dx = px-ptr.x, dy = py-ptr.y, d = Math.hypot(dx,dy), reach = R*1.05;
+        if(d < reach) pts[i].v -= (1 - d/reach) * R * 0.055;   /* dent inward */
+      }
+      pts[i].v += -pts[i].o * 0.085;      /* spring */
+      pts[i].v *= 0.90;                   /* damping -> wobble */
+      pts[i].o += pts[i].v;
+    }
+    var cp = pts.map(function(p){return p.o});
+    for(var j=0;j<N;j++){
+      var pr = cp[(j-1+N)%N], nx = cp[(j+1)%N];
+      pts[j].o += (pr + nx - 2*cp[j]) * 0.30;   /* neighbour smoothing */
+    }
+
+    /* breathing so it's alive before you touch it */
+    var pos = [];
+    for(var k=0;k<N;k++){
+      var ang = k/N*Math.PI*2;
+      var breathe = reduce ? 0 : Math.sin(t*2 + ang*3)*R*0.022 + Math.sin(t*1.3 + ang*2)*R*0.018;
+      var rad = R + pts[k].o + breathe;
+      pos.push([cx+Math.cos(ang)*rad, cy+Math.sin(ang)*rad]);
+    }
+
+    ctx.beginPath();
+    ctx.moveTo((pos[0][0]+pos[N-1][0])/2,(pos[0][1]+pos[N-1][1])/2);
+    for(var m=0;m<N;m++){
+      var cur = pos[m], nxt = pos[(m+1)%N];
+      ctx.quadraticCurveTo(cur[0],cur[1],(cur[0]+nxt[0])/2,(cur[1]+nxt[1])/2);
+    }
+    ctx.closePath();
+
+    var g = ctx.createRadialGradient(cx-R*0.4,cy-R*0.5,R*0.1,cx,cy,R*1.5);
+    g.addColorStop(0,opts.hi); g.addColorStop(0.55,opts.mid); g.addColorStop(1,opts.lo);
+    ctx.fillStyle = g;
+    ctx.shadowColor = opts.glow; ctx.shadowBlur = R*0.75;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    /* glossy highlight = the plastic-toy read */
+    ctx.save(); ctx.clip();
+    var s = ctx.createRadialGradient(cx-R*0.45,cy-R*0.55,0,cx-R*0.45,cy-R*0.55,R*0.85);
+    s.addColorStop(0,'rgba(255,255,255,.62)'); s.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle = s; ctx.fillRect(0,0,w,h);
+    ctx.restore();
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+Blob(document.getElementById('stage'), {n:66, hi:'#ffd1e4', mid:'#ff4d8d', lo:'#7a1450', glow:'rgba(255,77,141,.62)'});
+
+/* ---------- the line ---------- */
+var LINE = [
+  {name:'Mini Dumplings', tag:'the #1 seller', hi:'#ffe0ec', mid:'#ff6fa5', lo:'#7d1c4c', glow:'rgba(255,111,165,.55)'},
+  {name:'Glow Glitter Cubes', tag:'glows in the dark', hi:'#ccffe6', mid:'#3ce89b', lo:'#0c5c39', glow:'rgba(60,232,155,.55)'},
+  {name:'Starbucks Cubes', tag:'kids and adults', hi:'#ece2ff', mid:'#a98cff', lo:'#3b2a70', glow:'rgba(169,140,255,.55)'},
+  {name:'Frappuccino Cups', tag:'adults buy these', hi:'#ffeccc', mid:'#ffb24d', lo:'#7a4409', glow:'rgba(255,178,77,.55)'},
+  {name:'Nice Cubes', tag:'the classic', hi:'#d8f0ff', mid:'#57c7ff', lo:'#0f4f75', glow:'rgba(87,199,255,.55)'},
+  {name:'Gummy Bears', tag:'pocket money', hi:'#ffeeb8', mid:'#ffd23f', lo:'#7a5b04', glow:'rgba(255,210,63,.5)'}
+];
+var rail = document.getElementById('rail');
+LINE.forEach(function(p){
+  var d = document.createElement('div'); d.className='pod';
+  var c = document.createElement('canvas');
+  d.appendChild(c);
+  var b = document.createElement('b'); b.textContent = p.name;
+  var s = document.createElement('span'); s.textContent = p.tag;
+  d.appendChild(b); d.appendChild(s); rail.appendChild(d);
+  Blob(c, {n:44, hi:p.hi, mid:p.mid, lo:p.lo, glow:p.glow});
+});
+
+/* ---------- scroll reveals + count-up ---------- */
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll('[data-count]').forEach(function(el){
+      if(el.dataset.done) return; el.dataset.done = 1;
+      var end = +el.dataset.count, suf = el.dataset.suffix||'', st = performance.now();
+      (function tick(now){
+        var k = Math.min(1,(now-st)/1100), e2 = 1-Math.pow(1-k,3);
+        el.textContent = Math.round(end*e2) + (k===1?suf:'');
+        if(k<1) requestAnimationFrame(tick);
+      })(st);
+    });
+    io.unobserve(e.target);
+  });
+},{threshold:.18});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+})();
+</script>
+</body>
+</html>
