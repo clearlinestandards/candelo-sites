@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Candelo — Live Sites</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: #0A0A0A; color: #EDEDE6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 32px 20px;
+  }
+  h1 { font-size: 1.5rem; letter-spacing: .02em; margin: 0 0 4px; }
+  p.sub { color: #9A9A93; margin: 0 0 28px; font-size: .95rem; }
+  .grid { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 440px; }
+  a.card {
+    display: block; padding: 20px 22px; border: 1px solid #2A2A28; border-radius: 14px;
+    text-decoration: none; color: #EDEDE6; background: #131312; transition: border-color .15s;
+  }
+  a.card:active, a.card:hover { border-color: #D4A437; }
+  .card .name { font-size: 1.1rem; font-weight: 600; }
+  .card .desc { color: #9A9A93; font-size: .9rem; margin-top: 4px; }
+  footer { color: #5A5A55; font-size: .8rem; margin-top: 30px; text-align: center; }
+</style>
+</head>
+<body>
+  <h1>Candelo — Live Sites</h1>
+  <p class="sub">Phone-deployable hub · GitHub Pages</p>
+  <div class="grid">
+    <a class="card" href="./evidence-trail/"><div class="name">Evidence Trail — Driver PWA</div><div class="desc">GPS + photo + time proof-of-delivery for drivers</div></a>
+    <a class="card" href="./maat/"><div class="name">Maat — AI Receptionist</div><div class="desc">Launch / discovery landing page</div></a>
+    <a class="card" href="./frontier/"><div class="name">Frontier Organics</div><div class="desc">Implementation package hub</div></a>
+    <a class="card" href="./candelo-os-for-claude/"><div class="name">Candelo OS for Claude</div><div class="desc">Portable Edition — download the kit + overview</div></a>
+  </div>
+  <footer>Deploys automatically on every push · no Mac required</footer>
+</body>
+</html>
